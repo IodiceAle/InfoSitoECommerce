@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 14, 2023 alle 12:51
+-- Creato il: Apr 18, 2023 alle 10:40
 -- Versione del server: 10.4.25-MariaDB
 -- Versione PHP: 7.4.30
 
@@ -80,9 +80,6 @@ CREATE TABLE `commerce_login` (
   `id` int(11) NOT NULL,
   `user` varchar(25) NOT NULL,
   `pass` char(32) NOT NULL,
-  `nome` varchar(32) NOT NULL,
-  `cognome` varchar(32) NOT NULL,
-  `CF` char(16) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -95,7 +92,8 @@ CREATE TABLE `commerce_login` (
 CREATE TABLE `commerce_ordini` (
   `id` int(11) NOT NULL,
   `dataOra` datetime NOT NULL COMMENT 'YYYY-MM-DD HH:MM:SS',
-  `totale` time NOT NULL,
+  `totale` float NOT NULL,
+  `stato` varchar(32) NOT NULL,
   `coupon` varchar(32) NOT NULL,
   `idCart` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -110,7 +108,7 @@ CREATE TABLE `commerce_prodotti` (
   `id` int(11) NOT NULL,
   `nome` varchar(100) NOT NULL,
   `descrizione` varchar(500) NOT NULL,
-  `mediaStar` int(11) NOT NULL,
+  `mediaStar` float NOT NULL,
   `prezzo` float NOT NULL,
   `quanti` int(11) NOT NULL,
   `idCat` int(11) NOT NULL
