@@ -1,1 +1,20 @@
 https://bootstrap-ecommerce.com/
+https://mdbootstrap.com/docs/standard/
+
+ToDo:
+-pagination
+-buttton account
+-carrello cookie
+-inserire prodotti e resto db
+-aggiungere tutte le pagine
+-sistemare navbar
+-numero sopra my cart
+-logo
+-allungare search bar 
+-pagine:
+    pagina home con pochi prodotti
+    pagina con tutti i prodotti
+        categoria e altri filtri cerca
+    (pagina user)
+    pagina carrello
+    pagina ordine check-out
