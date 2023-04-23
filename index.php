@@ -1,3 +1,7 @@
+<?php
+ob_start();
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,31 +27,47 @@
                     <!-- Left elements -->
                     <div class="col-lg-2 col-sm-4 col-4">
                         <a href="index.php" class="float-start">
-                            <img src="#" alt="ciao" height="35" />
+                            <img src="image/logo.png" alt="ciao" height="35" />
                         </a>
                     </div>
                     <!-- Left elements -->
 
                     <!-- Center elements -->
-                    <div class="order-lg-last col-lg-5 col-sm-8 col-8">
+                    <div class="order-lg-last col-lg-4 col-sm-8 col-8">
                         <div class="d-flex float-end">
-                            <a href="https://github.com/mdbootstrap/bootstrap-material-design" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" target="_blank"> <i class="fas fa-user-alt m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">Sign in</p>
-                            </a>
-                            <a href="https://github.com/mdbootstrap/bootstrap-material-design" class="border rounded py-1 px-3 nav-link d-flex align-items-center" target="_blank"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
+                            <?php
+                            if (!isset($_SESSION["id"]))
+                                echo '<a href="#" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i>
+                                        <p class="d-none d-md-block mb-0">Sign in</p>
+                                    </a>';
+                            ?>
+                            <a href="#" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
                                 <p class="d-none d-md-block mb-0">My cart</p>
                             </a>
                         </div>
+                        <?php
+                        if (isset($_SESSION["id"]))
+                            echo '<div class="dropdown-flex float-end">
+                                    <button class="btn border rounded py-1 px-3 nav-link d-flex align-items-center dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-alt m-1 me-md-2"></i>
+                                    <p class="d-none d-md-block mb-0">' . $_SESSION["user"] . '</p>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="user.php">Profilo</a></li>
+                                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                                    </ul>
+                                </div>';
+                        ?>
                     </div>
                     <!-- Center elements -->
 
                     <!-- Right elements -->
-                    <div class="col-lg-5 col-md-12 col-12">
+                    <div class="col-lg-6 col-md-12 col-12">
                         <div class="input-group float-center">
-                            <div class="form-outline">
+                            <div class="form-outline" style="width: 80%;">
                                 <input type="search" placeholder="Search" id="form1" class="form-control" />
                             </div>
-                            <button type="button" class="btn btn-primary shadow-0">
+                            <button type="button" style="width: 15%;" class="btn btn-primary shadow-0">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -72,26 +92,26 @@
                     <!-- Left links -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Categories</a>
+                            <a id="blu" class="nav-link" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Hot offers</a>
+                            <a id="blu" class="nav-link" href="#">Hot offers</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Gift boxes</a>
+                            <a id="blu" class="nav-link" href="#">Gift boxes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Projects</a>
+                            <a id="blu" class="nav-link" href="#">Projects</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Menu item</a>
+                            <a id="blu" class="nav-link" href="#">Menu item</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Menu name</a>
+                            <a id="blu" class="nav-link" href="#">Menu name</a>
                         </li>
                         <!-- Navbar dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                            <a id="blu" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                                 Others
                             </a>
                             <!-- Dropdown menu -->
@@ -126,20 +146,32 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <nav class="nav flex-column nav-pills mb-md-2">
-                            <!-- base per il ciclo con il select per le categorie -->
-                            <a class="nav-link active py-2 ps-3 my-0" aria-current="page" href="#">Electronics</a>
-                            <a class="nav-link my-0 py-2 ps-3 bg-white" href="#">Clothes and wear</a>
+                            <!-- il ciclo con il select per le categorie -->
+                            <?php
+                            include("connection.php");
+
+                            echo '<a id="blu" class="nav-link active py-2 ps-3 my-0" aria-current="page" href="lista.php">Homepage</a>';
+                            $sql = "SELECT * FROM commerce_categorie";
+                            $result = $conn->query($sql);
+                            if ($result->num_rows > 0) {
+                                // output data of each row
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '<a class="nav-link my-0 py-2 ps-3 bg-white" href="lista.php?cat=' . $row["id"] . '">' . $row["tipo"] . '</a>';
+                                }
+                                echo '<a class="nav-link my-0 py-2 ps-3 bg-white" href="lista.php">All</a>';
+                            }
+                            ?>
                         </nav>
                     </div>
-                    <div class="col-lg-9">
+                    <div id="blu" class="col-lg-9">
                         <div class="card-banner h-auto p-5 bg-primary rounded-5" style="height: 350px;">
                             <div>
-                                <h2 class="text-white">
+                                <h2 id="blu" class="text-white">
                                     Great products with <br />
                                     best deals
                                 </h2>
-                                <p class="text-white">No matter how far along you are in your sophistication as an amateur astronomer, there is always one.</p>
-                                <a href="#" class="btn btn-light shadow-0 text-primary"> View more </a>
+                                <p id="blu" class="text-white">No matter how far along you are in your sophistication as an amateur astronomer, there is always one.</p>
+                                <a href="lista.php" class="btn btn-outline-light"> View more </a>
                             </div>
                         </div>
                     </div>
@@ -155,29 +187,55 @@
             <header class="mb-4">
                 <h3>TITOLO</h3>
             </header>
-            <!-- base per il ciclo con select per i prodotti -->
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <a href="#" class="img-wrap">
-                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/12.webp" class="card-img-top" style="aspect-ratio: 1 / 1">
-                    </a>
-                    <div class="card-body p-0 pt-3">
-                        <h5 class="card-title">$29.95</h5>
-                        <p class="card-text mb-0">GoPro action camera 4K</p>
-                        <p class="text-muted">
-                            Model: X-200
-                        </p>
-                        <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                            <a href="#" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+            <?php
+            include("connection.php");
+
+            $sql = "SELECT max(id) FROM commerce_prodotti";
+            $result = $conn->query($sql);
+            // output data of each row
+            $row = $result->fetch_assoc();
+            $max = $row["max(id)"];
+            // if ($max >= 8) {
+            // $lim = rand(1, $max);
+            // while (($max - $lim) <= 6)
+            // $lim = rand(1, $max);
+            // $sql = "SELECT * FROM commerce_prodotti as p join commerce_categorie as c on p.id=c.id where p.id>=$lim limit 8";
+            // }
+            $sql = "SELECT * FROM commerce_prodotti as p join commerce_categorie as c on p.id=c.id";
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                // output data of each row
+                echo '<div class="row">';
+                while ($row = $result->fetch_assoc()) {
+                    echo '<div class="col-lg-3 col-md-6 col-sm-6">
+                        <a href="dettagli.php?id=' . $row["id"] . '" class="img-wrap">
+                            <img src="' . $row["image"] . '" alt="non ce" class="card-img-top" style="aspect-ratio: 1 / 1;object-fit: scale-down;">
+                        </a>
+                        <div class="card-body p-0 pt-3">
+                            
+                                <a id="sottLin" href="dettagli.php?id=' . $row["id"] . '"><h4 style="text-decoration: none;" class="card-text mb-0">' . $row["nome"] . '</h4>
+                                <a style="text-decoration: none;color: black;" href="dettagli.php?id=' . $row["id"] . '"><p class="text-muted">ToDo: aggiungere star</p>
+                                <a style="text-decoration: none;color: black;" href="dettagli.php?id=' . $row["id"] . '"><p class="text-muted">
+                                    ' . $row["descrizione"] . '
+                                </p></a>
+                                <h5 class="card-title">' . $row["prezzo"] . ' €</h5>
+
+                            <!-- <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                                <div class="d-grid gap-2 col-6 mx-auto">
+                                    <button class="btn btn-primary shadow-0 me-1" type="button">Add to cart</button>
+                                </div>
+                            </div> -->
                         </div>
-                    </div>
-                </div>
-            </div>
+                </div>';
+                }
+                echo '</div>';
+            }
+            ?>
     </section>
     <!-- Products -->
 
     <!-- Feature -->
-    <section class="">
+    <section>
         <div class="container">
             <div class="row gy-4">
                 <div class="col-lg-6">
@@ -185,18 +243,18 @@
                         <div class="col-6 d-flex">
                             <div class="card w-100 bg-primary" style="min-height: 200px;">
                                 <div class="card-body">
-                                    <h5 class="text-white">Gaming toolset</h5>
-                                    <p class="text-white-50">Technology for cyber sport</p>
-                                    <a class="btn btn-outline-light btn-sm" href="#">Learn more</a>
+                                    <h5 id="blu" class="text-white">Gaming toolset</h5>
+                                    <p id="blu" class="text-white-50">Technology for cyber sport</p>
+                                    <a class="btn btn-outline-light btn-sm" href="lista.php?cat=3">Learn more</a>
                                 </div>
                             </div>
                         </div>
                         <div class="col-6 d-flex">
                             <div class="card w-100 bg-primary" style="min-height: 200px;">
                                 <div class="card-body">
-                                    <h5 class="text-white">Quality sound</h5>
-                                    <p class="text-white-50">All you need for music</p>
-                                    <a class="btn btn-outline-light btn-sm" href="#">Learn more</a>
+                                    <h5 id="blu" class="text-white">Quality sound</h5>
+                                    <p id="blu" class="text-white-50">All you need for music</p>
+                                    <a class="btn btn-outline-light btn-sm" href="lista.php?cat=2">Learn more</a>
                                 </div>
                             </div>
                         </div>

@@ -10,9 +10,7 @@ ToDo:
 -sistemare navbar
 -numero sopra my cart
 -logo
--allungare search bar 
 -pagine:
-    pagina home con pochi prodotti
     pagina con tutti i prodotti
         categoria e altri filtri cerca
     (pagina user)
