@@ -3,7 +3,6 @@ https://mdbootstrap.com/docs/standard/
 
 ToDo:
 -pagination
--buttton account
 -carrello cookie
 -inserire prodotti e resto db
 -aggiungere tutte le pagine

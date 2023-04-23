@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 18, 2023 alle 10:40
--- Versione del server: 10.4.25-MariaDB
--- Versione PHP: 7.4.30
+-- Creato il: Apr 23, 2023 alle 18:11
+-- Versione del server: 10.4.28-MariaDB
+-- Versione PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,7 +31,7 @@ CREATE TABLE `commerce_carrello` (
   `id` int(11) NOT NULL,
   `data` date NOT NULL COMMENT 'anno-mese-giorno',
   `idUser` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -42,7 +42,15 @@ CREATE TABLE `commerce_carrello` (
 CREATE TABLE `commerce_categorie` (
   `id` int(11) NOT NULL,
   `tipo` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `commerce_categorie`
+--
+
+INSERT INTO `commerce_categorie` (`id`, `tipo`) VALUES
+(1, 'Libri'),
+(2, 'Musica');
 
 -- --------------------------------------------------------
 
@@ -56,7 +64,14 @@ CREATE TABLE `commerce_comments` (
   `star` int(1) NOT NULL,
   `idUser` int(11) NOT NULL,
   `idProd` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `commerce_comments`
+--
+
+INSERT INTO `commerce_comments` (`id`, `text`, `star`, `idUser`, `idProd`) VALUES
+(1, 'Fa scifo', 1, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -68,7 +83,7 @@ CREATE TABLE `commerce_contiene` (
   `idCart` int(11) NOT NULL,
   `idProd` int(11) NOT NULL,
   `quanto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -81,7 +96,15 @@ CREATE TABLE `commerce_login` (
   `user` varchar(25) NOT NULL,
   `pass` char(32) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `commerce_login`
+--
+
+INSERT INTO `commerce_login` (`id`, `user`, `pass`, `admin`) VALUES
+(1, 'pippo', '0c88028bf3aa6a6a143ed846f2be1ea4', 1),
+(2, 'pluto', 'c6009f08fc5fc6385f1ea1f5840e179f', 0);
 
 -- --------------------------------------------------------
 
@@ -96,7 +119,7 @@ CREATE TABLE `commerce_ordini` (
   `stato` varchar(32) NOT NULL,
   `coupon` varchar(32) NOT NULL,
   `idCart` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -108,11 +131,19 @@ CREATE TABLE `commerce_prodotti` (
   `id` int(11) NOT NULL,
   `nome` varchar(100) NOT NULL,
   `descrizione` varchar(500) NOT NULL,
-  `mediaStar` float NOT NULL,
   `prezzo` float NOT NULL,
   `quanti` int(11) NOT NULL,
+  `image` varchar(50) NOT NULL,
   `idCat` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `commerce_prodotti`
+--
+
+INSERT INTO `commerce_prodotti` (`id`, `nome`, `descrizione`, `prezzo`, `quanti`, `image`, `idCat`) VALUES
+(1, 'Libro prova', 'vdhjfbjkgdragbkyiafdbgtsefv fdahgbfesfvgidfalhgfujrsfdyughkrbfyuds', 100.99, 1, 'images/libro1.png', 1),
+(2, 'Canzone', 'Guitar', 30.29, 2, 'images/musica1.png', 2);
 
 --
 -- Indici per le tabelle scaricate
@@ -182,19 +213,19 @@ ALTER TABLE `commerce_carrello`
 -- AUTO_INCREMENT per la tabella `commerce_categorie`
 --
 ALTER TABLE `commerce_categorie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_comments`
 --
 ALTER TABLE `commerce_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_login`
 --
 ALTER TABLE `commerce_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_ordini`
@@ -206,7 +237,7 @@ ALTER TABLE `commerce_ordini`
 -- AUTO_INCREMENT per la tabella `commerce_prodotti`
 --
 ALTER TABLE `commerce_prodotti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Limiti per le tabelle scaricate
