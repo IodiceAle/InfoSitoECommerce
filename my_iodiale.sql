@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 23, 2023 alle 18:11
+-- Creato il: Apr 24, 2023 alle 15:52
 -- Versione del server: 10.4.28-MariaDB
 -- Versione PHP: 8.2.4
 
@@ -50,7 +50,11 @@ CREATE TABLE `commerce_categorie` (
 
 INSERT INTO `commerce_categorie` (`id`, `tipo`) VALUES
 (1, 'Libri'),
-(2, 'Musica');
+(2, 'Musica'),
+(3, 'Abbigliamento'),
+(4, 'Elettronica'),
+(5, 'Sport'),
+(6, 'Gaming');
 
 -- --------------------------------------------------------
 
@@ -71,7 +75,9 @@ CREATE TABLE `commerce_comments` (
 --
 
 INSERT INTO `commerce_comments` (`id`, `text`, `star`, `idUser`, `idProd`) VALUES
-(1, 'Fa scifo', 1, 2, 2);
+(1, 'Fa scifo', 1, 2, 2),
+(3, 'Ottima fattura, compro da qui da 3 anni e non mi ha mai deluso', 4, 1, 2),
+(4, 'Ve lo sconsiglio se volete spendere poco ma affidabile', 2, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -104,7 +110,8 @@ CREATE TABLE `commerce_login` (
 
 INSERT INTO `commerce_login` (`id`, `user`, `pass`, `admin`) VALUES
 (1, 'pippo', '0c88028bf3aa6a6a143ed846f2be1ea4', 1),
-(2, 'pluto', 'c6009f08fc5fc6385f1ea1f5840e179f', 0);
+(2, 'pluto', 'c6009f08fc5fc6385f1ea1f5840e179f', 0),
+(3, 'gimmy', '59d5e3459532ae58379a8c7abe855bd1', 0);
 
 -- --------------------------------------------------------
 
@@ -143,7 +150,23 @@ CREATE TABLE `commerce_prodotti` (
 
 INSERT INTO `commerce_prodotti` (`id`, `nome`, `descrizione`, `prezzo`, `quanti`, `image`, `idCat`) VALUES
 (1, 'Libro prova', 'vdhjfbjkgdragbkyiafdbgtsefv fdahgbfesfvgidfalhgfujrsfdyughkrbfyuds', 100.99, 1, 'images/libro1.png', 1),
-(2, 'Canzone', 'Guitar', 30.29, 2, 'images/musica1.png', 2);
+(2, 'AC/DC', 'Album contenente brani e musiche della band AC/DC', 30.29, 2, 'images/musica1.png', 2),
+(3, 'Geronimo Stilton', 'Libro sulle appassionanti e divertenti avventure di Geronimo Stilton', 19.99, 1, 'images/libro2.png', 1),
+(4, 'Diario di Anna Frank', 'Libro sulla vita di Anna Frank', 24.99, 3, 'images/libro3.png', 1),
+(5, 'Irama', 'Album contenente brani e musiche del cantautore Irama', 34.99, 2, 'images/musica2.png', 2),
+(6, 'The Rolling Stones', 'Album contenente brani e musiche della band The Rolling Stones', 49.99, 4, 'images/musica3.png', 2),
+(7, 'Tuta', 'Calda tuta invernale in cotone, grigia', 39.99, 4, 'images/abbigliamento1.png', 3),
+(8, 'Scarpe antinfortunistiche', 'Scarpe da lavoro antinfortunistiche arancioni marca UPOWER', 59.99, 8, 'images/abbigliamento2.png', 3),
+(9, 'sciarpa', 'Calda sciarpa fatta a mano per inverno', 9.99, 1, 'images/abbigliamento3.png', 3),
+(10, 'Televisore', 'Televisore 50 pollici marca SAMSUNG', 499.99, 9, 'images/elettronica1.png', 4),
+(11, 'Telefono', 'Senior Phone Brondi Gala', 39.99, 1, 'images/elettronica2.png', 4),
+(12, 'Cuffiette', 'Airpods Wireless ricaricabili', 99.99, 3, 'images/elettronica3.png', 4),
+(13, 'Maglia squadra Calcio', 'Maglia a maniche corte sulla squadra calcistica \r\nAC Milan', 29.99, 4, 'images/sport1.png', 5),
+(14, 'Palla', 'Palla da calcio solo per campioni', 34.99, 1, 'images/sport2.png', 5),
+(15, 'Guantone', 'Guantone da Baseball per ricevitori in pelle', 49.99, 13, 'images/sport3.png', 5),
+(16, 'Controller', 'Dualsense joystick per ps5', 99.99, 2, 'images/gaming1.png', 6),
+(17, 'Mouse', 'Mouse gaming wireless professionale', 199.99, 5, 'images/gaming2.png', 6),
+(18, 'Tastiera', 'Tastiera da gaming wireless con led colorati personalizzabili', 299.99, 6, 'images/gaming3.png', 6);
 
 --
 -- Indici per le tabelle scaricate
@@ -213,19 +236,19 @@ ALTER TABLE `commerce_carrello`
 -- AUTO_INCREMENT per la tabella `commerce_categorie`
 --
 ALTER TABLE `commerce_categorie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_comments`
 --
 ALTER TABLE `commerce_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_login`
 --
 ALTER TABLE `commerce_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_ordini`
@@ -237,7 +260,7 @@ ALTER TABLE `commerce_ordini`
 -- AUTO_INCREMENT per la tabella `commerce_prodotti`
 --
 ALTER TABLE `commerce_prodotti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Limiti per le tabelle scaricate
