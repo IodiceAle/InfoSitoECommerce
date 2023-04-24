@@ -13,6 +13,8 @@ session_start();
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.css">
+    <!-- Load font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -27,7 +29,7 @@ session_start();
                     <!-- Left elements -->
                     <div class="col-lg-2 col-sm-4 col-4">
                         <a href="index.php" class="float-start">
-                            <img src="image/logo.png" alt="ciao" height="35" />
+                            <img src="image/logo.png" alt="logo" height="35" />
                         </a>
                     </div>
                     <!-- Left elements -->
@@ -37,7 +39,7 @@ session_start();
                         <div class="d-flex float-end">
                             <?php
                             if (!isset($_SESSION["id"]))
-                                echo '<a href="#" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i>
+                                echo '<a href="sign.php" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i>
                                         <p class="d-none d-md-block mb-0">Sign in</p>
                                     </a>';
                             ?>
@@ -79,11 +81,11 @@ session_start();
         <!-- Jumbotron -->
 
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav class="navbar navbar-dark navbar-expand-lg bg-primary">
             <!-- Container wrapper -->
             <div class="container justify-content-center justify-content-md-between">
                 <!-- Toggle button -->
-                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarLeftAlignExample" aria-controls="navbarLeftAlignExample" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLeftAlignExample" aria-controls="navbarLeftAlignExample" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fas fa-bars"></i>
                 </button>
 
@@ -92,43 +94,30 @@ session_start();
                     <!-- Left links -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a id="blu" class="nav-link" href="index.php">Home</a>
+                            <a id="blu" class="nav-link active" aria-current="page" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a id="blu" class="nav-link" href="#">Hot offers</a>
+                            <a id="blu" class="nav-link" href="lista.php">All Products</a>
                         </li>
-                        <li class="nav-item">
-                            <a id="blu" class="nav-link" href="#">Gift boxes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="blu" class="nav-link" href="#">Projects</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="blu" class="nav-link" href="#">Menu item</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="blu" class="nav-link" href="#">Menu name</a>
-                        </li>
-                        <!-- Navbar dropdown -->
                         <li class="nav-item dropdown">
-                            <a id="blu" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                                Others
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                All Categories
                             </a>
-                            <!-- Dropdown menu -->
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">Action</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider" />
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </li>
+                            <ul class="dropdown-menu">
+                                <?php
+                                include("connection.php");
+                                $sql = "SELECT * FROM commerce_categorie";
+                                $result = $conn->query($sql);
+                                if ($result->num_rows > 0) {
+                                    // output data of each row
+                                    while ($row = $result->fetch_assoc())
+                                        echo '<li><a class="dropdown-item" href="lista.php?cat=' . $row["id"] . '">' . $row["tipo"] . '</a></li>';
+                                }
+                                ?>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a id="blu" class="nav-link" href="cart.php">Shopping Cart</a>
                         </li>
                     </ul>
                     <!-- Left links -->
@@ -195,13 +184,12 @@ session_start();
             // output data of each row
             $row = $result->fetch_assoc();
             $max = $row["max(id)"];
-            // if ($max >= 8) {
-            // $lim = rand(1, $max);
-            // while (($max - $lim) <= 6)
-            // $lim = rand(1, $max);
-            // $sql = "SELECT * FROM commerce_prodotti as p join commerce_categorie as c on p.id=c.id where p.id>=$lim limit 8";
-            // }
-            $sql = "SELECT * FROM commerce_prodotti as p join commerce_categorie as c on p.id=c.id";
+            if ($max >= 8) {
+                $lim = rand(1, ($max - 7));
+                echo $lim;
+                $sql = "SELECT * FROM commerce_prodotti as p left join commerce_categorie as c on p.id=c.id where p.id>=$lim limit 8";
+            } else
+                $sql = "SELECT * FROM commerce_prodotti as p left join commerce_categorie as c on p.id=c.id";
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 // output data of each row
@@ -245,7 +233,7 @@ session_start();
                                 <div class="card-body">
                                     <h5 id="blu" class="text-white">Gaming toolset</h5>
                                     <p id="blu" class="text-white-50">Technology for cyber sport</p>
-                                    <a class="btn btn-outline-light btn-sm" href="lista.php?cat=3">Learn more</a>
+                                    <a class="btn btn-outline-light btn-sm" href="lista.php?cat=6">Learn more</a>
                                 </div>
                             </div>
                         </div>

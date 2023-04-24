@@ -4,11 +4,10 @@ https://mdbootstrap.com/docs/standard/
 ToDo:
 -pagination
 -carrello cookie
--inserire prodotti e resto db
+-pagina inserire prodotti e categorie per admin e rimuovere
 -aggiungere tutte le pagine
--sistemare navbar
--numero sopra my cart
 -logo
+-finire chkLogReg controllando la lunghezza dei vari campi e della password se ha tutto
 -pagine:
     pagina con tutti i prodotti
         categoria e altri filtri cerca
