@@ -28,8 +28,8 @@
                         <h3 class="text-center mb-4">Login</h3>
                         <form action="chkLogReg.php" method="post">
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
-                                <input type="email" placeholder="Email or Username" class="form-control" name="email" aria-describedby="emailHelp" required>
+                                <label for="email" class="form-label">Username</label>
+                                <input type="text" placeholder="User" class="form-control" name="email" aria-describedby="emailHelp" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
