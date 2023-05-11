@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 24, 2023 alle 15:52
+-- Creato il: Mag 11, 2023 alle 11:12
 -- Versione del server: 10.4.28-MariaDB
 -- Versione PHP: 8.2.4
 
@@ -65,7 +65,7 @@ INSERT INTO `commerce_categorie` (`id`, `tipo`) VALUES
 CREATE TABLE `commerce_comments` (
   `id` int(11) NOT NULL,
   `text` varchar(500) NOT NULL,
-  `star` int(1) NOT NULL,
+  `star` int(1) NOT NULL DEFAULT 5,
   `idUser` int(11) NOT NULL,
   `idProd` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -75,9 +75,12 @@ CREATE TABLE `commerce_comments` (
 --
 
 INSERT INTO `commerce_comments` (`id`, `text`, `star`, `idUser`, `idProd`) VALUES
-(1, 'Fa scifo', 1, 2, 2),
-(3, 'Ottima fattura, compro da qui da 3 anni e non mi ha mai deluso', 4, 1, 2),
-(4, 'Ve lo sconsiglio se volete spendere poco ma affidabile', 2, 3, 2);
+(1, 'Fa scifo', 4, 2, 2),
+(3, 'Ottima fattura, compro da qui da 3 anni e non mi ha mai deluso', 3, 1, 2),
+(4, 'Ve lo sconsiglio se volete spendere poco ma affidabile', 2, 3, 2),
+(5, 'niente di che', 3, 3, 1),
+(6, 'nulla di che ma ci sta', 4, 3, 3),
+(7, 'bellissimo!', 5, 4, 2);
 
 -- --------------------------------------------------------
 
@@ -86,6 +89,7 @@ INSERT INTO `commerce_comments` (`id`, `text`, `star`, `idUser`, `idProd`) VALUE
 --
 
 CREATE TABLE `commerce_contiene` (
+  `idTot` int(11) NOT NULL,
   `idCart` int(11) NOT NULL,
   `idProd` int(11) NOT NULL,
   `quanto` int(11) NOT NULL
@@ -111,7 +115,8 @@ CREATE TABLE `commerce_login` (
 INSERT INTO `commerce_login` (`id`, `user`, `pass`, `admin`) VALUES
 (1, 'pippo', '0c88028bf3aa6a6a143ed846f2be1ea4', 1),
 (2, 'pluto', 'c6009f08fc5fc6385f1ea1f5840e179f', 0),
-(3, 'gimmy', '59d5e3459532ae58379a8c7abe855bd1', 0);
+(3, 'nomelungoperprovarerespon', '59d5e3459532ae58379a8c7abe855bd1', 0),
+(4, 'prova', '189bbbb00c5f1fb7fba9ad9285f193d1', 0);
 
 -- --------------------------------------------------------
 
@@ -135,7 +140,7 @@ CREATE TABLE `commerce_ordini` (
 --
 
 CREATE TABLE `commerce_prodotti` (
-  `id` int(11) NOT NULL,
+  `idP` int(11) NOT NULL,
   `nome` varchar(100) NOT NULL,
   `descrizione` varchar(500) NOT NULL,
   `prezzo` float NOT NULL,
@@ -148,16 +153,16 @@ CREATE TABLE `commerce_prodotti` (
 -- Dump dei dati per la tabella `commerce_prodotti`
 --
 
-INSERT INTO `commerce_prodotti` (`id`, `nome`, `descrizione`, `prezzo`, `quanti`, `image`, `idCat`) VALUES
-(1, 'Libro prova', 'vdhjfbjkgdragbkyiafdbgtsefv fdahgbfesfvgidfalhgfujrsfdyughkrbfyuds', 100.99, 1, 'images/libro1.png', 1),
+INSERT INTO `commerce_prodotti` (`idP`, `nome`, `descrizione`, `prezzo`, `quanti`, `image`, `idCat`) VALUES
+(1, 'Libro prova', 'vdhjfbjkgdragbkyiafdbgtsefv fdahgbfesfvgidfalhgfujrsfdyughkrbfyuds', 100.99, 0, 'images/libro1.png', 1),
 (2, 'AC/DC', 'Album contenente brani e musiche della band AC/DC', 30.29, 2, 'images/musica1.png', 2),
 (3, 'Geronimo Stilton', 'Libro sulle appassionanti e divertenti avventure di Geronimo Stilton', 19.99, 1, 'images/libro2.png', 1),
 (4, 'Diario di Anna Frank', 'Libro sulla vita di Anna Frank', 24.99, 3, 'images/libro3.png', 1),
-(5, 'Irama', 'Album contenente brani e musiche del cantautore Irama', 34.99, 2, 'images/musica2.png', 2),
+(5, 'BALLADS 1', 'Album contenente brani e musiche del cantautore Joji', 34.99, 2, 'images/musica2.png', 2),
 (6, 'The Rolling Stones', 'Album contenente brani e musiche della band The Rolling Stones', 49.99, 4, 'images/musica3.png', 2),
 (7, 'Tuta', 'Calda tuta invernale in cotone, grigia', 39.99, 4, 'images/abbigliamento1.png', 3),
 (8, 'Scarpe antinfortunistiche', 'Scarpe da lavoro antinfortunistiche arancioni marca UPOWER', 59.99, 8, 'images/abbigliamento2.png', 3),
-(9, 'sciarpa', 'Calda sciarpa fatta a mano per inverno', 9.99, 1, 'images/abbigliamento3.png', 3),
+(9, 'Sciarpa', 'Calda sciarpa fatta a mano per inverno', 9.99, 1, 'images/abbigliamento3.png', 3),
 (10, 'Televisore', 'Televisore 50 pollici marca SAMSUNG', 499.99, 9, 'images/elettronica1.png', 4),
 (11, 'Telefono', 'Senior Phone Brondi Gala', 39.99, 1, 'images/elettronica2.png', 4),
 (12, 'Cuffiette', 'Airpods Wireless ricaricabili', 99.99, 3, 'images/elettronica3.png', 4),
@@ -197,7 +202,7 @@ ALTER TABLE `commerce_comments`
 -- Indici per le tabelle `commerce_contiene`
 --
 ALTER TABLE `commerce_contiene`
-  ADD PRIMARY KEY (`idCart`,`idProd`),
+  ADD PRIMARY KEY (`idTot`),
   ADD KEY `idCart` (`idCart`),
   ADD KEY `idProd` (`idProd`);
 
@@ -219,7 +224,7 @@ ALTER TABLE `commerce_ordini`
 -- Indici per le tabelle `commerce_prodotti`
 --
 ALTER TABLE `commerce_prodotti`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`idP`),
   ADD KEY `idCat` (`idCat`);
 
 --
@@ -242,13 +247,19 @@ ALTER TABLE `commerce_categorie`
 -- AUTO_INCREMENT per la tabella `commerce_comments`
 --
 ALTER TABLE `commerce_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT per la tabella `commerce_contiene`
+--
+ALTER TABLE `commerce_contiene`
+  MODIFY `idTot` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_login`
 --
 ALTER TABLE `commerce_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `commerce_ordini`
@@ -260,7 +271,7 @@ ALTER TABLE `commerce_ordini`
 -- AUTO_INCREMENT per la tabella `commerce_prodotti`
 --
 ALTER TABLE `commerce_prodotti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `idP` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Limiti per le tabelle scaricate
@@ -277,14 +288,14 @@ ALTER TABLE `commerce_carrello`
 --
 ALTER TABLE `commerce_comments`
   ADD CONSTRAINT `commerce_comments_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `commerce_login` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `commerce_comments_ibfk_2` FOREIGN KEY (`idProd`) REFERENCES `commerce_prodotti` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `commerce_comments_ibfk_2` FOREIGN KEY (`idProd`) REFERENCES `commerce_prodotti` (`idP`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `commerce_contiene`
 --
 ALTER TABLE `commerce_contiene`
   ADD CONSTRAINT `commerce_contiene_ibfk_1` FOREIGN KEY (`idCart`) REFERENCES `commerce_carrello` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `commerce_contiene_ibfk_2` FOREIGN KEY (`idProd`) REFERENCES `commerce_prodotti` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `commerce_contiene_ibfk_2` FOREIGN KEY (`idProd`) REFERENCES `commerce_prodotti` (`idP`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `commerce_ordini`

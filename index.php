@@ -16,6 +16,13 @@ session_start();
     <!-- Load font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript">
+        function logout_user() {
+            if (confirm('Are You Sure?')) {
+                window.location.href = 'logout.php';
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -41,38 +48,56 @@ session_start();
                             if (!isset($_SESSION["id"]))
                                 echo '<a href="sign.php" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i>
                                         <p class="d-none d-md-block mb-0">Sign in</p>
-                                    </a>';
-                            ?>
-                            <a href="#" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
+                                    </a>
+                                    <a href="sign.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
                                 <p class="d-none d-md-block mb-0">My cart</p>
-                            </a>
-                        </div>
-                        <?php
-                        if (isset($_SESSION["id"]))
-                            echo '<div class="dropdown-flex float-end">
+                            </a>';
+                            else
+                                echo '<div class="dropdown-flex float-end">
                                     <button class="btn border rounded py-1 px-3 nav-link d-flex align-items-center dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user-alt m-1 me-md-2"></i>
-                                    <p class="d-none d-md-block mb-0">' . $_SESSION["user"] . '</p>
+                                    <p class="d-none d-md-block mb-0">' . $_SESSION["username"] . '</p>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><a class="dropdown-item" href="user.php">Profilo</a></li>
-                                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                                    <li><a class="dropdown-item" href="javascript: logout_user()">Logout</a></li>
                                     </ul>
-                                </div>';
+                                </div>
+                                <a href="cart.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
+                                <p class="d-none d-md-block mb-0">My cart</p>
+                            </a>';
+                            ?>
+                        </div>
+                        <?php
+                        // if (isset($_SESSION["id"]))
+                        //     echo '<div class="dropdown-flex float-end">
+                        //             <button class="btn border rounded py-1 px-3 nav-link d-flex align-items-center dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        //             <i class="fas fa-user-alt m-1 me-md-2"></i>
+                        //             <p class="d-none d-md-block mb-0">' . $_SESSION["username"] . '</p>
+                        //             </button>
+                        //             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        //             <li><a class="dropdown-item" href="user.php">Profilo</a></li>
+                        //             <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                        //             </ul>
+                        //         </div>';
                         ?>
                     </div>
                     <!-- Center elements -->
 
                     <!-- Right elements -->
                     <div class="col-lg-6 col-md-12 col-12">
-                        <div class="input-group float-center">
-                            <div class="form-outline" style="width: 80%;">
-                                <input type="search" placeholder="Search" id="form1" class="form-control" />
+                        <form action="lista.php" method="get">
+                            <div class="input-group float-center">
+
+                                <div class="form-outline" style="width: 80%;">
+                                    <input type="search" placeholder="Search" name="cerca" class="form-control" />
+                                </div>
+                                <button type="submit" style="width: 15%;" class="btn btn-primary shadow-0">
+                                    <i class="fas fa-search"></i>
+                                </button>
+
                             </div>
-                            <button type="button" style="width: 15%;" class="btn btn-primary shadow-0">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
+                        </form>
                     </div>
                     <!-- Right elements -->
                 </div>
@@ -174,36 +199,49 @@ session_start();
     <section>
         <div class="container my-5">
             <header class="mb-4">
-                <h3>TITOLO</h3>
+                <h3>Random Products</h3>
             </header>
             <?php
             include("connection.php");
 
-            $sql = "SELECT max(id) FROM commerce_prodotti";
+            $sql = "SELECT max(idP) FROM commerce_prodotti";
             $result = $conn->query($sql);
             // output data of each row
             $row = $result->fetch_assoc();
-            $max = $row["max(id)"];
+            $max = $row["max(idP)"];
             if ($max >= 8) {
                 $lim = rand(1, ($max - 7));
-                echo $lim;
-                $sql = "SELECT * FROM commerce_prodotti as p left join commerce_categorie as c on p.id=c.id where p.id>=$lim limit 8";
+                $sql = "SELECT p.*, cat.*, round(AVG(c.star),1) as avg_star FROM (commerce_prodotti p left JOIN commerce_comments c ON p.idP = c.idProd) left join commerce_categorie as cat on p.idP=cat.id where p.idP>=$lim group by p.idP limit 8";
             } else
-                $sql = "SELECT * FROM commerce_prodotti as p left join commerce_categorie as c on p.id=c.id";
+                $sql = "SELECT p.*, cat.*, round(AVG(c.star),1) as avg_star FROM (commerce_prodotti p left JOIN commerce_comments c ON p.idP = c.idProd) left join commerce_categorie as cat on p.idP=cat.id";
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 // output data of each row
                 echo '<div class="row">';
                 while ($row = $result->fetch_assoc()) {
                     echo '<div class="col-lg-3 col-md-6 col-sm-6">
-                        <a href="dettagli.php?id=' . $row["id"] . '" class="img-wrap">
-                            <img src="' . $row["image"] . '" alt="non ce" class="card-img-top" style="aspect-ratio: 1 / 1;object-fit: scale-down;">
+                        <a href="dettagli.php?id=' . $row["idP"] . '" class="img-wrap">
+                            <img src="' . $row["image"] .
+                        '" alt="non ce" class="card-img-top" style="aspect-ratio: 1 / 1;object-fit: scale-down;">
                         </a>
                         <div class="card-body p-0 pt-3">
                             
-                                <a id="sottLin" href="dettagli.php?id=' . $row["id"] . '"><h4 style="text-decoration: none;" class="card-text mb-0">' . $row["nome"] . '</h4>
-                                <a style="text-decoration: none;color: black;" href="dettagli.php?id=' . $row["id"] . '"><p class="text-muted">ToDo: aggiungere star</p>
-                                <a style="text-decoration: none;color: black;" href="dettagli.php?id=' . $row["id"] . '"><p class="text-muted">
+                                <a id="sottLin" href="dettagli.php?id=' . $row["idP"] . '"><h4 style="text-decoration: none;" class="card-text mb-0">' . $row["nome"] . '</h4></a>
+                                <div class="d-flex flex-row my-3">
+                            <div class="text-warning mb-1 me-2">';
+                    for ($i = 0; $i < intval($row["avg_star"]); $i++) {
+                        echo '<i class="fa fa-star"></i>';
+                    }
+                    echo '<span class="ms-1">  ' . $row["avg_star"] .
+                        '</span>
+                            </div>';
+                    if ($row["quanti"] == 0)
+                        echo '<span class="text-danger ms-2">NOT in stock</span>';
+                    else
+                        echo '<span class="text-success">IN stock</span><span class="text-muted ms-2">only ' . $row["quanti"] . ' left</span>';
+
+                    echo '</div>
+                                <a style="text-decoration: none;color: black;" href="dettagli.php?id=' . $row["idP"] . '"><p class="text-muted">
                                     ' . $row["descrizione"] . '
                                 </p></a>
                                 <h5 class="card-title">' . $row["prezzo"] . ' €</h5>
