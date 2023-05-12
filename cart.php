@@ -290,10 +290,12 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                     $result = $conn->query($sql);
                     if ($result->num_rows > 0) {
                         // output data of each row
+                        $tots = 0;
+                        echo
+                        '<div class="col-lg-3">';
                         while ($row = $result->fetch_assoc()) {
-                            echo
-                            '<div class="col-lg-3">
-                    <!-- <div class="card mb-3 border shadow-0">
+
+                            echo '<!-- <div class="card mb-3 border shadow-0">
                         <div class="card-body">
                             <form>
                                 <div class="form-group">
@@ -305,14 +307,15 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                                 </div>
                             </form>
                         </div>
-                    </div> -->
-                    <div class="card shadow-0 border">
+                    </div> -->';
+
+                            $tots += intval($row["quanto"]) * floatval($row["prezzo"]);
+                        }
+                        echo '<div class="card shadow-0 border">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
-                                <p class="mb-2">';
-                            $totp += intval($row["quanto"]) * floatval($row["prezzo"]);
-                            echo $totp . ' €</p>
+                                <p class="mb-2">' . $tots . ' €</p>
                             </div>
                             <!-- <div class="d-flex justify-content-between">
                                 <p class="mb-2">Discount:</p>
@@ -326,8 +329,8 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
                                 <p class="mb-2 fw-bold">';
-                            $totp += 19;
-                            echo $totp . ' €</p>
+                        $tots += 19;
+                        echo $tots . ' €</p>
                             </div>
 
                             <div class="mt-3">
@@ -337,7 +340,6 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                         </div>
                     </div>
                 </div>';
-                        }
                     }
                 }
 
