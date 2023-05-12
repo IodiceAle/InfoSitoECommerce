@@ -48,10 +48,7 @@ session_start();
                             if (!isset($_SESSION["id"]))
                                 echo '<a href="sign.php" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i>
                                         <p class="d-none d-md-block mb-0">Sign in</p>
-                                    </a>
-                                    <a href="sign.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">My cart</p>
-                            </a>';
+                                    </a>';
                             else
                                 echo '<div class="dropdown-flex float-end">
                                     <button class="btn border rounded py-1 px-3 nav-link d-flex align-items-center dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -62,11 +59,32 @@ session_start();
                                     <li><a class="dropdown-item" href="user.php">Profilo</a></li>
                                     <li><a class="dropdown-item" href="javascript: logout_user()">Logout</a></li>
                                     </ul>
-                                </div>
-                                <a href="cart.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">My cart</p>
-                            </a>';
+                                </div>';
                             ?>
+                            <a href="cart.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
+                                <p class="d-none d-md-block mb-0">My cart</p>
+                                <?php
+                                if (isset($_SESSION['id'])) {
+                                    include("connection.php");
+                                    $sql = "SELECT count(*) as num_items from commerce_contiene where idCart=(SELECT max(id) from commerce_carrello where idUser=" . $_SESSION['id'] . ")";
+                                    $result = $conn->query($sql);
+                                    if ($result->num_rows > 0) {
+                                        $row = $result->fetch_assoc();
+                                        $num_items = $row['num_items'];
+                                        if ($num_items > 0) {
+                                            echo '<span class="badge bg-primary ms-2">' . $num_items . '</span>';
+                                        }
+                                    }
+                                } else if (isset($_COOKIE['cart'])) {
+                                    $cart = json_decode($_COOKIE['cart'], true);
+                                    $num_items = count($cart);
+                                    if ($num_items > 0) {
+                                        echo '<span class="badge bg-primary ms-2">' . $num_items . '</span>';
+                                    }
+                                }
+                                ?>
+                                <!-- <span class="badge bg-primary ms-2"></span> -->
+                            </a>
                         </div>
                         <?php
                         // if (isset($_SESSION["id"]))
@@ -199,7 +217,12 @@ session_start();
     <section>
         <div class="container my-5">
             <header class="mb-4">
-                <h3>Random Products</h3>
+                <?php
+                if (isset($_SESSION["username"]))
+                    echo '<h3>Hi ' . $_SESSION["username"] . '! Here are some products for you</h3>';
+                else
+                    echo '<h3>Random Products</h3>';
+                ?>
             </header>
             <?php
             include("connection.php");

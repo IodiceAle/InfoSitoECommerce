@@ -21,6 +21,10 @@ if (isset($_POST["login"])) {
         $_SESSION["admin"] = $row["admin"];
         $stmt->close();
         $conn->close();
+        if (isset($_COOKIE["cart"])) {
+            // Delete cart cookie
+            setcookie('cart', "", time() - 3600, "/");
+        }
         header("location:index.php?username=$us");
     } else
         echo '<script type="text/javascript">alert("password o username non validi!");window.location.href = "sign.php";</script>';
@@ -45,6 +49,38 @@ if (isset($_POST["register"])) {
 
             $stmt->execute();
             $stmt->close();
+
+            $id = 0;
+            $sql = "SELECT id from commerce_login where user='" . $us . "'";
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $id = $row["id"];
+            }
+
+            $sql = "INSERT into commerce_carrello (data,idUser) values ('" . date("Y-m-d") . "'," . $id . ")";
+            $result = $conn->query($sql);
+
+            if (isset($_COOKIE["cart"])) {
+                $sql = "SELECT max(id) from commerce_carrello where idUser=" . $id . "";
+                $maxId = 0;
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $maxId = $row["max(id)"];
+                }
+
+                // Retrieve cart items from cookie
+                $cart = json_decode($_COOKIE['cart'], true);
+                // Add cart items to user's cart in the database
+                foreach ($cart as $item) {
+                    $sql = "INSERT INTO commerce_contiene (idCart, idProd, quanto) VALUES (" . $maxId . ", " . $item["Pid"] . ", " . $item["quanto"] . ")";
+                    $result = $conn->query($sql);
+                }
+                // Delete cart cookie
+                setcookie('cart', "", time() - 3600, "/");
+            }
+
             echo '<script type="text/javascript">alert("registrazione effettuata con successo!");window.location.href = "sign.php";</script>';
         } else {
             echo "0 results";

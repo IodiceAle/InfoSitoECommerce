@@ -1,3 +1,7 @@
+<?php
+ob_start();
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +20,12 @@
         function logout_user() {
             if (confirm('Are You Sure?')) {
                 window.location.href = 'logout.php';
+            }
+        }
+
+        function delete_rev(uid, pId) {
+            if (confirm('Are You Sure?')) {
+                window.location.href = 'DMReview.php?idR=' + uid + '?proId=' + pId;
             }
         }
     </script>
@@ -43,10 +53,7 @@
                             if (!isset($_SESSION["id"]))
                                 echo '<a href="sign.php" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i>
                                         <p class="d-none d-md-block mb-0">Sign in</p>
-                                    </a>
-                                    <a href="sign.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">My cart</p>
-                            </a>';
+                                    </a>';
                             else
                                 echo '<div class="dropdown-flex float-end">
                                     <button class="btn border rounded py-1 px-3 nav-link d-flex align-items-center dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -57,11 +64,31 @@
                                     <li><a class="dropdown-item" href="user.php">Profilo</a></li>
                                     <li><a class="dropdown-item" href="javascript: logout_user()">Logout</a></li>
                                     </ul>
-                                </div>
-                                <a href="cart.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
-                                <p class="d-none d-md-block mb-0">My cart</p>
-                            </a>';
+                                </div>';
                             ?>
+                            <a href="cart.php" class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-shopping-cart m-1 me-md-2"></i>
+                                <p class="d-none d-md-block mb-0">My cart</p>
+                                <?php
+                                if (isset($_SESSION['id'])) {
+                                    include("connection.php");
+                                    $sql = "SELECT count(*) as num_items from commerce_contiene where idCart=(SELECT max(id) from commerce_carrello where idUser=" . $_SESSION['id'] . ")";
+                                    $result = $conn->query($sql);
+                                    if ($result->num_rows > 0) {
+                                        $row = $result->fetch_assoc();
+                                        $num_items = $row['num_items'];
+                                        if ($num_items > 0) {
+                                            echo '<span class="badge bg-primary ms-2">' . $num_items . '</span>';
+                                        }
+                                    }
+                                } else if (isset($_COOKIE['cart'])) {
+                                    $cart = json_decode($_COOKIE['cart'], true);
+                                    $num_items = count($cart);
+                                    if ($num_items > 0) {
+                                        echo '<span class="badge bg-primary ms-2">' . $num_items . '</span>';
+                                    }
+                                }
+                                ?>
+                            </a>
                         </div>
                     </div>
                     <!-- Center elements -->
@@ -96,7 +123,7 @@
                 <!-- Breadcrumb -->
                 <nav class="d-flex">
                     <h6 class="mb-0">
-                        <a href="index.php" class="text-white-50">Home</a>
+                        <a href="index.php" id="blu" class="text-white-50">Home</a>
                         <span class="text-white-50 mx-2"> / </span>
                         <?php
                         include("connection.php");
@@ -105,7 +132,7 @@
                             $result = $conn->query($sql);
                             if ($result->num_rows > 0) {
                                 $row = $result->fetch_assoc();
-                                echo '<a href="lista.php?cat=' . $row["id"] . '" class="text-white-50">' . $row["tipo"] . '</a><span class="text-white-50 mx-2"> / </span>
+                                echo '<a id="blu" href="lista.php?cat=' . $row["id"] . '" class="text-white-50">' . $row["tipo"] . '</a><span class="text-white-50 mx-2"> / </span>
                         <a class="text-white"><u>' . $row["nome"] . '</u></a>';
                             }
                         }
@@ -121,7 +148,7 @@
     <!-- content -->
     <section class="py-5">
         <div class="container">
-            <form action="" method="post">
+            <form action="cartAdd.php" method="post">
                 <div class="row gx-5">
                     <?php
                     if (isset($_GET["id"])) {
@@ -188,10 +215,10 @@ WHERE p.idP =" . $_GET["id"] . "";
                                 <select name="quantita" class="form-select border border-secondary" style="height: 35px;">';
                             if ($row["quanti"] > 0) {
                                 for ($i = 1; $i <= $row["quanti"]; $i++) {
-                                    echo "<option>" . $i . "</option>";
+                                    echo "<option value='" . $i . "'>" . $i . "</option>";
                                 }
                             } else
-                                echo "<option>0</option>";
+                                echo "<option value='0'>0</option>";
 
                             echo
                             '</select>
@@ -213,6 +240,68 @@ WHERE p.idP =" . $_GET["id"] . "";
         </div>
     </section>
     <!-- content -->
+
+    <!-- Reviews section -->
+    <section class="py-5">
+        <div class="container">
+            <h2>Reviews</h2>
+            <hr>
+            <?php
+            $sql = "SELECT * FROM commerce_comments c JOIN commerce_login u ON c.idUser = u.id WHERE c.idProd =" . $_GET["id"] . "";
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $deleteButton = '';
+                    if (isset($_SESSION["id"]) && $_SESSION["id"] == $row["idUser"]) {
+                        $deleteButton = '<form action="DMReview.php" method="post"><input type="hidden" name="reviewID" value="' . $row["idCom"] . '"><a href="javascript: delete_rev(' . $row['idCom'] . ', ' . $_GET["id"] . ')"><button type="button" name="delete" class="btn btn-danger btn-sm">Delete</button></a> <!--<button type="button" name="modify" class="btn btn-warning btn-sm ms-2">Modify</button>!--></form>';
+                    }
+                    echo '<div class="row mb-4">
+                    <div class="col-md-2 col-4">
+                        <div class="text-warning">';
+                    for ($i = 0; $i < $row["star"]; $i++) {
+                        echo '<i class="fa fa-star"></i>';
+                    }
+                    echo '</div>
+                    </div>
+                    <div class="col-md-8 col-8">
+                        <div class="fw-bold">' . $row["user"] . '</div>
+                        <div>' . $row["text"] . '</div>
+                    </div>
+                    <div class="col-md-2 col-12">
+                        ' . $deleteButton . '
+                    </div>
+                </div>';
+                }
+            } else {
+                echo '<p>No reviews yet.</p>';
+            }
+            if (isset($_SESSION["id"])) {
+                echo '<h2>Add a Review</h2>
+    <hr>
+    <form action="addReview.php" method="post">
+        <div class="mb-3 rating-container">
+        <label class="form-label">Rating :</label>
+            <div class="rate">';
+                for ($i = 5; $i >= 1; $i--) {
+                    echo '<input type="radio" id="star' . ($i) . '" name="rate" value="' . ($i) . '" /><label for="star' . ($i) . '" title="' . ($i) . ' stars"></label>';
+                }
+                echo '</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Review :</label>
+            <textarea name="commento" class="form-control" required></textarea>
+        </div>
+        <input type="hidden" name="proID" value="' . $_GET["id"] . '">
+        <button type="submit" name="addR" class="btn btn-primary">Submit Review</button>
+    </form>';
+            } else {
+                echo '<p>You must be logged in to leave a review.</p>';
+            }
+            ?>
+        </div>
+    </section>
+    <!-- End Reviews section -->
+
     <!-- Footer -->
     <footer class="text-center text-lg-start text-muted bg-primary mt-3">
         <div class="">
