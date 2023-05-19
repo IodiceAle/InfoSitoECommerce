@@ -23,9 +23,15 @@ session_start();
             }
         }
 
-        function delete_itm(totId, caId, pId, quan) {
+        function delete_itm(totId, pId) {
             if (confirm('Are You Sure?')) {
-                window.location.href = 'remItm.php?idR=' + uid + '?proId=' + pId;
+                window.location.href = 'remItm.php?idR=' + totId + '&idPro=' + pId;
+            }
+        }
+
+        function delete_itmC(pId, quanto) {
+            if (confirm('Are You Sure?')) {
+                window.location.href = 'remItm.php?idPro=' + pId + '?quanto=' + quanto;
             }
         }
     </script>
@@ -176,65 +182,10 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                                 </div>
                                 <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
                                     <div class="float-md-end">
-                                        <a href="javascript: delete_itm(' . $row['idTot'] . ', ' . $row['idCart'] . ',' . $row['quanto'] . ')">Remove</a>
+                                        <a href="javascript: delete_itm(' . $row['idTot'] . ',' . $row['idProd'] . ')"><button type="button" class="btn btn-danger">Remove</button></a>
                                     </div>
                                 </div>
-                            </div>';
-                                    }
-                                } else
-                                    echo 'No Product in Cart yet.';
-                            }
-
-
-
-
-                            if (isset($_COOKIE["cart"])) {
-                                $cart_items = json_decode($_COOKIE['cart'], true);
-                                if (!empty($cart)) {
-                                    foreach ($cart as $item) {
-                                        include("connection.php");
-                                        $sql = "SELECT * from commerce_prodotti where idP=" . $item["Pid"] . "";
-
-                                        $result = $conn->query($sql);
-                                        if ($result->num_rows > 0) {
-                                            // output data of each row
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo '<div class="row gy-3">
-                                    <div class="col-lg-5">
-                                        <div class="me-lg-5">
-                                            <div class="d-flex">
-                                                <a href="dettagli.php?id=' . $item["Pid"] . '"><img src="' . $row["image"] . '" class="border rounded me-3" style="width: 96px; height: 96px; object-fit: scale-down;" /></a>
-                                                <div class="">
-                                                    <a id="sottLin" href="dettagli.php?id=' . $item["Pid"] . '" class="nav-link">' . $row["nome"] . '</a>
-                                                    <a id="sottLin" href="dettagli.php?id=' . $item["Pid"] . '"><p class="text-muted">' . $row["descrizione"] . '</p></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
-                                        <div class="">
-                                            <text class="h6">';
-                                                $totp = intval($item["quanto"]) * floatval($row["prezzo"]);
-                                                echo $totp . ' €</text> <br />
-                                            <small class="text-muted text-nowrap"> ' . $row["prezzo"] . ' € / per item </small>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
-                                        <div class="float-md-end">
-                                            <a href="javascript: delete_itm(' . $item['Pid'] . ')"> Remove</a>
-                                        </div>
-                                    </div>
-                                </div>';
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    echo 'No Product in Cart yet.';
-                                }
-                            }
-                            ?>
-
-                        </div>
+                            </div></div>
 
                         <div class="border-top pt-4 mx-4 mb-4">
                             <h5 class="card-title mb-3">Shipping info</h5>
@@ -276,26 +227,22 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- cart -->
-                <!-- summary -->
-                <?php
-                if (isset($_SESSION["id"])) {
-                    include("connection.php");
-                    $sql = "SELECT * from ((commerce_contiene cont join commerce_carrello car on cont.idCart=car.id) join commerce_prodotti pr on cont.idProd=pr.idP) 
+                        </div>';
+                                    }
+                                    $sql = "SELECT * from ((commerce_contiene cont join commerce_carrello car on cont.idCart=car.id) join commerce_prodotti pr on cont.idProd=pr.idP) 
 join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " AND car.id=(select max(id) from commerce_carrello where idUser=" . $_SESSION["id"] . ")";
 
-                    $result = $conn->query($sql);
-                    if ($result->num_rows > 0) {
-                        // output data of each row
-                        $tots = 0;
-                        echo
-                        '<div class="col-lg-3">';
-                        while ($row = $result->fetch_assoc()) {
+                                    $result = $conn->query($sql);
+                                    //if ($result->num_rows > 0) {
+                                    // output data of each row
+                                    $tots = 0;
+                                    $cart = 0;
+                                    echo
+                                    '</div></div><div class="col-lg-3">';
+                                    while ($row = $result->fetch_assoc()) {
+                                        $cart = $row["idCart"];
 
-                            echo '<!-- <div class="card mb-3 border shadow-0">
+                                        echo '<!-- <div class="card mb-3 border shadow-0">
                         <div class="card-body">
                             <form>
                                 <div class="form-group">
@@ -309,9 +256,9 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                         </div>
                     </div> -->';
 
-                            $tots += intval($row["quanto"]) * floatval($row["prezzo"]);
-                        }
-                        echo '<div class="card shadow-0 border">
+                                        $tots += intval($row["quanto"]) * floatval($row["prezzo"]);
+                                    }
+                                    echo '<div class="card shadow-0 border">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
@@ -329,24 +276,123 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
                                 <p class="mb-2 fw-bold">';
-                        $tots += 19;
-                        echo $tots . ' €</p>
+                                    $tots += 19;
+                                    echo $tots . ' €</p>
                             </div>
 
                             <div class="mt-3">
-                                <a href="compra.php?cartId=" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
+                                <a href="compra.php?cartId=' . $cart . '" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
                                 <a href="index.php" class="btn btn-light w-100 border mt-2"> Back to shop </a>
                             </div>
                         </div>
                     </div>
                 </div>';
-                    }
-                }
+                                } else
+                                    echo 'No Product in Cart yet.';
+                            }
 
-                ?>
-                <!-- summary -->
+
+
+
+                            if (isset($_COOKIE["cart"])) {
+                                $cart_items = json_decode($_COOKIE['cart'], true);
+                                if (!empty($cart)) {
+                                    foreach ($cart as $item) {
+                                        include("connection.php");
+                                        $sql = "SELECT * from commerce_prodotti where idP=" . $item["Pid"] . "";
+
+                                        $result = $conn->query($sql);
+                                        if ($result->num_rows > 0) {
+                                            // output data of each row
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo '<div class="row gy-3">
+                                    <div class="col-lg-5">
+                                        <div class="me-lg-5">
+                                            <div class="d-flex">
+                                                <a href="dettagli.php?id=' . $item["Pid"] . '"><img src="' . $row["image"] . '" class="border rounded me-3" style="width: 96px; height: 96px; object-fit: scale-down;" /></a>
+                                                <div class="">
+                                                    <a id="sottLin" href="dettagli.php?id=' . $item["Pid"] . '" class="nav-link">' . $row["nome"] . '</a>
+                                                    <a id="sottLin" href="dettagli.php?id=' . $item["Pid"] . '"><p class="text-muted">' . $row["descrizione"] . '</p></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                                        <div class="">
+                                            <text class="h6">';
+                                                $totp = intval($item["quanto"]) * floatval($row["prezzo"]);
+                                                echo $totp . ' €</text> <br />
+                                            <small class="text-muted text-nowrap"> ' . $row["prezzo"] . ' € / per item </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
+                                        <div class="float-md-end">
+                                            <a href="javascript: delete_itmC(' . $item["Pid"] . ',' . $item["quanto"] . ')"><button type="button" class="btn btn-danger">Remove</button></a>
+                                        </div>
+                                    </div>
+                                </div></div>
+
+                        <div class="border-top pt-4 mx-4 mb-4">
+                            <h5 class="card-title mb-3">Shipping info</h5>
+                            <div class="row mb-3">
+                                <div class="col-lg-4 mb-3">
+                                    <!-- Default checked radio -->
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked />
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                Express delivery <br />
+                                                <small class="text-muted">3-4 days via Fedex </small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <!-- Default radio -->
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                                            <label class="form-check-label" for="flexRadioDefault2">
+                                                Post office <br />
+                                                <small class="text-muted">20-30 days via post </small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <!-- Default radio -->
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" />
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                Self pick-up <br />
+                                                <small class="text-muted">Come to our shop </small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    echo 'No Product in Cart yet.';
+                                }
+                            }
+                            ?>
+
+                        </div>
+                    </div>
+                    <!-- cart -->
+                    <!-- summary -->
+
+
+
+
+                    <!-- summary -->
+                </div>
             </div>
-        </div>
     </section>
     <!-- cart + summary -->
 
