@@ -316,6 +316,15 @@ session_start();
                                                     <i class="fas fa-star text-secondary"></i>
                                                 </label>
                                             </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="0" name="star[]" <?php if (isset($_POST['filtro'])) {
+                                                                                                                            if (isset($_POST['star']))
+                                                                                                                                if (in_array("1", $_POST['star'])) echo "checked";
+                                                                                                                        } ?> id="flexCheckDefault" />
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    nessuna valutazione
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -354,6 +363,7 @@ session_start();
                     }
                     if (isset($_GET["cat"]))
                         $sql .= " HAVING idCat= " . $_GET["cat"] . "";
+                    echo $sql;
                     if (!isset($_GET["cerca"]) && !isset($_GET["cat"]) && !isset($_POST["filtro"]))
                         $sql = "SELECT p.*, round(AVG(c.star),1) as avg_star
         FROM commerce_prodotti p JOIN commerce_comments c ON p.idP = c.idProd

@@ -1,16 +1,6 @@
-https://bootstrap-ecommerce.com/
-https://mdbootstrap.com/docs/standard/
-
 ToDo:
--pagination
--carrello cookie
--pagina inserire prodotti e categorie per admin e rimuovere
--aggiungere tutte le pagine
--logo
--finire chkLogReg controllando la lunghezza dei vari campi e della password se ha tutto
--pagine:
-    pagina con tutti i prodotti
-        categoria e altri filtri cerca
-    (pagina user)
-    pagina carrello
-    pagina ordine check-out
+    -pagination
+    -pagina admin per inserire e rimuovere prodotti
+    -migliorare chkLogReg controllando la lunghezza dei vari campi e la sicurezza della password
+    -implementare una pagina per il profilo dell'utente
+    -finire la pagina ordine check-out

@@ -237,24 +237,26 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                                     // output data of each row
                                     $tots = 0;
                                     $cart = 0;
+                                    $dis = 0;
                                     echo
                                     '</div></div><div class="col-lg-3">';
                                     while ($row = $result->fetch_assoc()) {
                                         $cart = $row["idCart"];
-
-                                        echo '<!-- <div class="card mb-3 border shadow-0">
-                        <div class="card-body">
-                            <form>
-                                <div class="form-group">
-                                    <label class="form-label">Have coupon?</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control border" name="" placeholder="Coupon code" />
-                                        <button class="btn btn-light border">Apply</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div> -->';
+                                        if ($row["quanti"] == 0)
+                                            $dis = 1;
+                                        //                     '<!-- <div class="card mb-3 border shadow-0">
+                                        //     <div class="card-body">
+                                        //         <form>
+                                        //             <div class="form-group">
+                                        //                 <label class="form-label">Have coupon?</label>
+                                        //                 <div class="input-group">
+                                        //                     <input type="text" class="form-control border" name="" placeholder="Coupon code" />
+                                        //                     <button class="btn btn-light border">Apply</button>
+                                        //                 </div>
+                                        //             </div>
+                                        //         </form>
+                                        //     </div>
+                                        // </div> -->'
 
                                         $tots += intval($row["quanto"]) * floatval($row["prezzo"]);
                                     }
@@ -281,7 +283,11 @@ join commerce_login lo on car.idUser=lo.id where lo.id=" . $_SESSION["id"] . " A
                             </div>
 
                             <div class="mt-3">
-                                <a href="compra.php?cartId=' . $cart . '" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
+                                <a href="compra.php?cartId=' . $cart .
+                                        '"><button class="btn btn-success w-100 shadow-0 mb-2"';
+                                    if ($dis != 0)
+                                        echo "disabled";
+                                    echo '> Make Purchase </button></a>
                                 <a href="index.php" class="btn btn-light w-100 border mt-2"> Back to shop </a>
                             </div>
                         </div>
