@@ -1,7 +1,6 @@
-# InfoSito
-# Progetto E-Commerce - README
+# InfoSitoECommerce
 
-Questo è un progetto di e-commerce sviluppato come parte del corso di quinta superiore.
+Questo è un progetto di e-commerce sviluppato nel corso della quinta superiore.
 
 ## ToDo:
 
