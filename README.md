@@ -2,11 +2,10 @@
 
 Questo è un progetto di e-commerce sviluppato nel corso della quinta superiore.
 
-## ToDo:
+## ToDo (da fare):
 
 ### 1. Implementare la paginazione
    - Aggiungere la funzionalità di paginazione per gestire una grande quantità di prodotti sulla pagina principale.
-   - Consentire agli utenti di navigare facilmente tra le diverse pagine di prodotti.
 
 ### 2. Creare una pagina admin/venditore per l'inserimento e la rimozione dei prodotti
    - Creare una pagina di amministrazione accessibile solo agli utenti autorizzati.
@@ -22,5 +21,4 @@ Questo è un progetto di e-commerce sviluppato nel corso della quinta superiore.
    - Mostrare l'elenco degli ordini effettuati dall'utente.
 
 ### 5. Completare la pagina di check-out degli ordini
-   - Implementare tutte le funzionalità necessarie per consentire agli utenti di effettuare un ordine con successo.
    - Aggiungere un modulo per l'inserimento delle informazioni di pagamento e spedizione e codici promozionali/sconto.
